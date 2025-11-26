@@ -1,0 +1,46 @@
+{
+  "name": "binance-alpha-helper",
+  "displayName": "binance alpha helper",
+  "version": "1.0.0",
+  "description": "币安alpha网页版小助手，支持自动刷交易量，根据成交额与交易次数自动完成刷分",
+  "author": "https://x.com/qian_feifei",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package",
+    "test": "jest"
+  },
+  "dependencies": {
+    "plasmo": "0.90.5",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@plasmohq/parcel-config": "^0.42.0",
+    "@plasmohq/prettier-plugin-sort-imports": "^4.0.1",
+    "@types/chrome": "^0.0.280",
+    "@types/node": "^22.9.0",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "chrome-types": "^0.1.388",
+    "postcss": "^8.0.0",
+    "postcss-modules": "^4.3.0",
+    "prettier": "^3.3.3",
+    "sass": "^1.94.0",
+    "typescript": "^5.6.3"
+  },
+  "manifest": {
+    "host_permissions": [
+      "https://*.binance.com/*"
+    ],
+    "permissions": [
+      "storage",
+      "tabs",
+      "activeTab"
+    ],
+    "icons": {},
+    "action": {
+      "default_popup": "popup.html"
+    }
+  }
+}

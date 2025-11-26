@@ -1,0 +1,21 @@
+{
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": false,
+  "singleQuote": false,
+  "trailingComma": "none",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "plugins": ["@plasmohq/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^react",
+    "^plasmo",
+    "^@plasmohq/(.*)$",
+    "^~(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}
