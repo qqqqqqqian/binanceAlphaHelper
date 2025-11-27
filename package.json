@@ -1,7 +1,7 @@
 {
   "name": "binance-alpha-helper",
   "displayName": "binance alpha helper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "币安alpha网页版小助手，支持自动刷交易量，根据成交额与交易次数自动完成刷分",
   "author": "https://x.com/qian_feifei",
   "scripts": {

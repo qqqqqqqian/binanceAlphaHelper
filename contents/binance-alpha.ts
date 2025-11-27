@@ -995,33 +995,15 @@ async function executeAutoTrade(currentPrice: number): Promise<void> {
   console.log("🤖 开始执行自动交易")
   console.log(`💰 基准价格: ${currentPrice}`)
 
-  // 获取基准价格的小数位数
-  const decimalPlaces = getDecimalPlaces(currentPrice)
-  console.log(`🔢 小数位数: ${decimalPlaces}`)
 
   // 计算买入价格：当前价格上涨 0.015%，0.1%滑点，防止买入失败，卖出同理
-  let buyPrice = (currentPrice * (1 + 0.1 / 100)).toFixed(decimalPlaces)
+  let buyPrice = (currentPrice * (1 + 0.1 / 100))
   console.log(`📈 买入价格: ${buyPrice} (上涨 0.015%)`)
 
   // 计算卖出价格：当前价格下跌 0.015%
-  let sellPrice = (currentPrice * (1 - 0.1 / 100)).toFixed(decimalPlaces)
+  let sellPrice = (currentPrice * (1 - 0.1 / 100))
   console.log(`📉 卖出价格: ${sellPrice} (下跌 0.015%)`)
 
-  // 检查 buyPrice 是否等于 sellPrice
-  if (buyPrice === sellPrice) {
-    console.log("⚠️ 买入价格等于卖出价格，进行调整...")
-
-    // 计算最小单位（例如小数位数为3，则最小单位为0.001）
-    const minUnit = Math.pow(10, -decimalPlaces)
-
-    // buyPrice 最后一位加1
-    buyPrice = (parseFloat(buyPrice) + minUnit).toFixed(decimalPlaces)
-    console.log(`📈 调整后买入价格: ${buyPrice} (+${minUnit})`)
-
-    // sellPrice 最后一位减1
-    sellPrice = (parseFloat(sellPrice) - minUnit).toFixed(decimalPlaces)
-    console.log(`📉 调整后卖出价格: ${sellPrice} (-${minUnit})`)
-  }
 
   console.log("═══════════════════════════════════")
 
