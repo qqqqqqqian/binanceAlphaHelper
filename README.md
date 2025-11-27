@@ -1,4 +1,4 @@
-# 币安 Alpha 自动刷分助手 (Binance Alpha Auto)
+# 币安 Alpha 自动刷分助手 (Binance Alpha Helper)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/Language-TypeScript-blue.svg)](https://www.typescriptlang.org/)
