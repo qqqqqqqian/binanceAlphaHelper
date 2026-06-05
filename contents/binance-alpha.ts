@@ -1,5 +1,11 @@
 import type { PlasmoCSConfig } from "plasmo"
 
+import {
+  findLimitSellInput,
+  findUSDTBalance,
+  setNativeInputValue
+} from "../lib/binance-alpha-dom"
+
 // 仅在币安 Alpha 页面运行
 export const config: PlasmoCSConfig = {
   matches: ["https://www.binance.com/zh-CN/alpha*"],
@@ -779,32 +785,24 @@ function setLimitPriceInputValue(value: string | number) {
     console.log("❌ 未找到 id=limitPrice 的输入框")
     return false
   }
-  input.value = String(value)
-  // 触发 input 和 change 事件，确保页面能感知到变更
-  input.dispatchEvent(new Event("input", { bubbles: true }))
-  input.dispatchEvent(new Event("change", { bubbles: true }))
+  setNativeInputValue(input, value)
   console.log(`✅ 已将限价输入框的值设置为: ${value}`)
   return true
 }
 
-// 设置限价面板下 placeholder="限价卖出" 的输入框的值
+// 设置限价面板下反向订单卖出价格输入框的值
 function setLimitSellInputValue(value: string | number) {
   const panel = findLimitPanelNode()
   if (!panel) {
     console.log("❌ 未找到限价面板节点")
     return false
   }
-  const input = panel.querySelector<HTMLInputElement>(
-    'input[placeholder="限价卖出"]'
-  )
+  const input = findLimitSellInput(panel)
   if (!input) {
-    console.log("❌ 未找到 placeholder='限价卖出' 的输入框")
+    console.log("❌ 未找到反向订单卖出价格输入框")
     return false
   }
-  input.value = String(value)
-  // 触发 input 和 change 事件，确保页面能感知到变更
-  input.dispatchEvent(new Event("input", { bubbles: true }))
-  input.dispatchEvent(new Event("change", { bubbles: true }))
+  setNativeInputValue(input, value)
   console.log(`✅ 已将限价卖出输入框的值设置为: ${value}`)
   return true
 }
@@ -865,9 +863,7 @@ async function setTurnoverInputValue(value: string | number): Promise<boolean> {
     // 尝试在其内部查找 input
     const innerInput = firstGrandChild.querySelector<HTMLInputElement>("input")
     if (innerInput) {
-      innerInput.value = String(value)
-      innerInput.dispatchEvent(new Event("input", { bubbles: true }))
-      innerInput.dispatchEvent(new Event("change", { bubbles: true }))
+      setNativeInputValue(innerInput, value)
 
       // 等待一小段时间确保值已设置
       await new Promise((resolve) => setTimeout(resolve, 100))
@@ -881,9 +877,7 @@ async function setTurnoverInputValue(value: string | number): Promise<boolean> {
 
   // 设置 input 的值
   const input = firstGrandChild as HTMLInputElement
-  input.value = String(value)
-  input.dispatchEvent(new Event("input", { bubbles: true }))
-  input.dispatchEvent(new Event("change", { bubbles: true }))
+  setNativeInputValue(input, value)
 
   // 等待一小段时间确保值已设置
   await new Promise((resolve) => setTimeout(resolve, 100))
@@ -936,53 +930,10 @@ async function getUSDTBalance(): Promise<number | null> {
     return null
   }
 
-  // 使用 XPath 在限价面板内查找包含"可用"文本的 div 元素
-  const xpath = './/div[contains(text(), "可用")]'
-  const result = document.evaluate(
-    xpath,
-    panel,
-    null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE,
-    null
-  )
-
-  const availableDiv = result.singleNodeValue as HTMLElement | null
-  if (!availableDiv) {
-    console.log("❌ 未找到包含'可用'的 div 标签")
-    return null
-  }
-
-  // 获取5层父节点
-  let parent: HTMLElement | null = availableDiv
-  for (let i = 1; i <= 5; i++) {
-    parent = parent?.parentElement
-    if (!parent) {
-      console.log(`❌ 没有第${i}层父节点`)
-      return null
-    }
-  }
-
-  // 获取第5层父节点的第二个子元素
-  const secondChild = parent.children[1]
-  if (!secondChild) {
-    console.log("❌ 第5层父节点没有第二个子元素")
-    return null
-  }
-
-  // 在第二个子元素中查找包含 "USDT" 的文本
-  const textContent = secondChild.textContent || ""
-
-  // 提取 USDT 前面的数字
-  const usdtMatch = textContent.match(/([\d,.]+)\s*USDT/)
-  if (usdtMatch && usdtMatch[1]) {
-    // 移除逗号并转换为数字
-    const balanceStr = usdtMatch[1].replace(/,/g, "")
-    const balance = parseFloat(balanceStr)
-
-    if (!isNaN(balance)) {
-      console.log(`💵 USDT 余额: ${balance}`)
-      return balance
-    }
+  const balance = findUSDTBalance(panel)
+  if (balance !== null) {
+    console.log(`💵 USDT 余额: ${balance}`)
+    return balance
   }
 
   console.log("❌ 未能提取 USDT 余额")
@@ -1541,9 +1492,7 @@ function checkPageLoaded(): { loaded: boolean; message: string } {
   }
 
   // 3. 检查限价卖出输入框是否存在
-  const limitSellInput = panel.querySelector<HTMLInputElement>(
-    'input[placeholder="限价卖出"]'
-  )
+  const limitSellInput = findLimitSellInput(panel)
   if (!limitSellInput) {
     return {
       loaded: false,
